@@ -1,0 +1,12 @@
+{
+  "name": "file-organizer-electron",
+  "version": "1.0.0",
+  "description": "File Organizer Tool with Electron Frontend",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "devDependencies": {
+    "electron": "^26.2.0"
+  }
+}

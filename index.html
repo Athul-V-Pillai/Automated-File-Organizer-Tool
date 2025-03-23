@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>File Organizer</title>
+  <link rel="stylesheet" href="ui.css">
+</head>
+<body>
+  <h1>File Organizer</h1>
+  <button id="selectFolder">Select Folder</button>
+  <button id="startOrganizer" disabled>Start Organizer</button>
+  <button id="stopOrganizer" disabled>Stop Organizer</button>
+  <p id="status">Status: Waiting for action...</p>
+
+  <script>
+    const status = document.getElementById('status');
+    let folderPath = null;
+
+    document.getElementById('selectFolder').addEventListener('click', async () => {
+      folderPath = await window.api.selectFolder();
+      if (folderPath) {
+        status.textContent = `Selected Folder: ${folderPath}`;
+        document.getElementById('startOrganizer').disabled = false;
+      }
+    });
+
+    document.getElementById('startOrganizer').addEventListener('click', () => {
+      if (folderPath) {
+        window.api.startOrganizer(folderPath);
+        status.textContent = 'Organizer started...';
+        document.getElementById('stopOrganizer').disabled = false;
+        document.getElementById('startOrganizer').disabled = true;
+      }
+    });
+
+    document.getElementById('stopOrganizer').addEventListener('click', () => {
+      window.api.stopOrganizer();
+      status.textContent = 'Stopping organizer...';
+    });
+
+    window.api.onStatus((_event, message) => {
+      status.textContent = `Status: ${message}`;
+    });
+
+    window.api.onError((_event, error) => {
+      status.textContent = `Error: ${error}`;
+    });
+
+    window.api.onStopped((_event, message) => {
+      status.textContent = message;
+      document.getElementById('stopOrganizer').disabled = true;
+      document.getElementById('startOrganizer').disabled = false;
+    });
+  </script>
+</body>
+</html>
